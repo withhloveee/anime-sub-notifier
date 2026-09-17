@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import os
 
-from db.models import User, Subscription
+from db.models import User, Subscription, db
 from telegram.ext import Application, CommandHandler
 
 import requests
@@ -55,16 +55,27 @@ async def timer(context):
 
     print("timer was called...")
 
-    users = User.select()
+    with db.connection_context():
 
-    for user in users:
+        users = User.select()
+           
+        for user in users:
+            user_id = user.user_id
 
-        user_id = user.user_id
+            for subscription in user.subscriptions:
+                anime_id = subscription.anime_id
+                anime_name = subscription.anime_name
+                last_ep = subscription.last_notified_ep
 
-        await context.bot.send_message(
-            chat_id=user_id,
-            text="10s reminder here!"
-        )
+                recent_ep = await getLastNotifiedEp(anime_id)
+
+                if recent_ep != last_ep:
+                    await context.bot.send_message(
+                        chat_id=user_id,
+                        text=f'''"{anime_name}"\n\nEpisode number:{recent_ep} just dropped!'''
+                )
+                    subscription.last_notified_ep = recent_ep
+                    subscription.save()
 
 if __name__ == "__main__":
 
@@ -72,7 +83,7 @@ if __name__ == "__main__":
 
     app.job_queue.run_repeating(
         timer,
-        interval=30
+        interval=600 #10mins
     )
 
     app.add_handler(CommandHandler("register", register))
