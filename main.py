@@ -83,7 +83,10 @@ if __name__ == "__main__":
 
     app.job_queue.run_repeating(
         timer,
-        interval=600 #10mins
+        interval=600,
+        job_kwargs={
+            "misfire_grace_time": 60
+        }
     )
 
     app.add_handler(CommandHandler("register", register))
