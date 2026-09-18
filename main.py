@@ -56,7 +56,6 @@ async def register(update, context):
     else:
         await update.message.reply_text("You are now successfully registered.")
 
-
 async def subscribe(update, context):
     try:
         anime_id = context.args[0]
