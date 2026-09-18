@@ -67,9 +67,6 @@ async def subscribe(update, context):
     anime_name = await getAnimeName(anime_id)
     last_notified_ep = await getLastNotifiedEp(anime_id)
 
-    print(anime_id)
-    print(user_id)
-
     Subscription.create(
         user_id=user_id,
         anime_name=anime_name,
