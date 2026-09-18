@@ -11,6 +11,32 @@ load_dotenv()
 API_TOKEN = os.getenv("API_TOKEN")
 
 # Commands
+async def start(update,contet):
+    text = """
+Hii! 👋✨
+
+Want to get notified whenever a new episode drops?
+It's super easy! 
+
+1️⃣ /register
+
+First, register yourself so I know where to send your notifications. 😊
+
+2️⃣ /sub <animeID>
+
+Example:
+/sub 182205
+
+Just replace 182205 with the animeID of the anime you want to follow.
+
+And you're all set! 🎉
+
+I'll let you know whenever a new episode drops. 🔔
+
+Now go enjoy your anime~ 🍿✨
+"""
+    await update.message.reply_text(text)
+
 async def register(update, context):
 
     user_id = update.effective_user.id
@@ -25,7 +51,10 @@ async def register(update, context):
         }
     )
 
-    await update.message.reply_text("You are now registered!")
+    if created == False:
+        await update.message.reply_text("It was found that you are already registered.")
+    else:
+        await update.message.reply_text("You are now successfully registered.")
 
 
 async def subscribe(update, context):
@@ -89,6 +118,7 @@ if __name__ == "__main__":
         }
     )
 
+    app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("register", register))
     app.add_handler(CommandHandler("sub", subscribe))
     app.run_polling()
