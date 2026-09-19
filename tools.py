@@ -65,3 +65,27 @@ async def getAnimeCoverImage(anime_id):
                 data = await response.json()
 
     return data["anime"]["coverImage"]["large"]
+
+async def search_api(anime_id):
+    url = f"https://tsuzuki.top/api/v1/search?q={anime_id}"
+
+    async with aiohttp.ClientSession() as session:
+                async with session.get(url) as response:
+                    data = await response.json()
+
+    ListOfResults = data["anime"]
+
+    output = ""
+    for match in ListOfResults:
+        title = match["title"]
+
+        if title.get("english"):
+            output += title["english"]
+        else:
+            output += title["romaji"]
+
+        output += "\n"
+        output += "id: " + str(match["id"])
+        output += "\n\n"
+
+    return output

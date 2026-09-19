@@ -6,6 +6,7 @@ from telegram.ext import Application, CommandHandler
 #Import: Commands
 from handlers.start import start
 from handlers.subscribe import subscribe
+from handlers.search import search
 
 #Import: Timer
 from jobs.timer import timer
@@ -27,5 +28,6 @@ if __name__ == "__main__":
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("sub", subscribe))
+    app.add_handler(CommandHandler("search", search))
 
     app.run_polling()
