@@ -12,11 +12,19 @@ async def subscribe(update, context):
     anime_name = await getAnimeName(anime_id)
     last_notified_ep = await getLastNotifiedEp(anime_id)
 
-    Subscription.create(
+
+    user = Subscription.get_or_none(
         user_id=user_id,
-        anime_name=anime_name,
-        anime_id=anime_id,
-        last_notified_ep=last_notified_ep
+        anime_id=anime_id
     )
 
-    await update.message.reply_text(f'''"{anime_name}" has been added to your notifications! ✅\n\n📺 Last episode released: {last_notified_ep}''')
+    if user:
+        await update.message.reply_text("You're already subscribed to this anime! 📺")
+    else:
+        Subscription.create(
+            user_id=user_id,
+            anime_name=anime_name,
+            anime_id=anime_id,
+            last_notified_ep=last_notified_ep
+        )
+        await update.message.reply_text(f'''"{anime_name}" has been added to your notifications! ✅\n\n📺 Last episode released: {last_notified_ep}''')
