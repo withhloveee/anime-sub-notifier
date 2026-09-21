@@ -2,6 +2,7 @@ from db.models import Subscription
 from tools import getAnimeName, getLastNotifiedEp
 
 async def subscribe(update, context):
+    #check: if any message was sent with /sub command.
     try:
         anime_id = context.args[0]
     except:
@@ -12,13 +13,12 @@ async def subscribe(update, context):
     anime_name = await getAnimeName(anime_id)
     last_notified_ep = await getLastNotifiedEp(anime_id)
 
-
-    user = Subscription.get_or_none(
+    anime_found = Subscription.get_or_none(
         user_id=user_id,
         anime_id=anime_id
     )
 
-    if user:
+    if anime_found:
         await update.message.reply_text("You're already subscribed to this anime! 📺")
     else:
         Subscription.create(
