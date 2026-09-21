@@ -89,3 +89,20 @@ async def search_api(anime_id):
         output += "\n\n"
 
     return output
+
+async def check_finished_airing(anime_id):
+    url = f"https://tsuzuki.top/api/v1/anime/{anime_id}"
+     
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            data = await response.json()
+
+    try:
+        first_ep_airing_time = data.get("episodes")[0]["airingAt"]
+    except (TypeError, IndexError, KeyError):
+        #failed to determine due to API issues (probably anime is too old).
+        return None
+    
+    now = datetime.now(timezone.utc).timestamp()
+
+    return first_ep_airing_time < now

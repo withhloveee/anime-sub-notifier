@@ -1,5 +1,5 @@
 from db.models import Subscription
-from tools import getAnimeName, getLastNotifiedEp
+from tools import getAnimeName, getLastNotifiedEp, check_finished_airing
 
 async def subscribe(update, context):
     #check: if any message was sent with /sub command.
@@ -12,6 +12,20 @@ async def subscribe(update, context):
     user_id = update.effective_user.id
     anime_name = await getAnimeName(anime_id)
     last_notified_ep = await getLastNotifiedEp(anime_id)
+    
+    if last_notified_ep is None:
+        # No episode has aired yet
+        last_notified_ep = 0
+
+    is_finished = await check_finished_airing(anime_id)
+
+    if is_finished is None:
+        await update.message.reply_text("Hmm... we couldn't find that anime. :<\nTry checking the anime ID.")
+        return
+
+    if is_finished:
+        await update.message.reply_text("This anime has already finished airing. Nothing to notify you about. 😭")
+        return
 
     anime_found = Subscription.get_or_none(
         user_id=user_id,
