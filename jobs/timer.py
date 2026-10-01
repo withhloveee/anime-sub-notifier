@@ -4,6 +4,8 @@ from tools import  getLastNotifiedEp, getAnimeCoverImage,getNextEpisode
 
 async def timer(context):
 
+    cache_dict = {}
+
     print("timer was called...")
 
     with db.connection_context():
@@ -18,8 +20,14 @@ async def timer(context):
                 anime_name = subscription.anime_name
 
                 last_ep = subscription.last_notified_ep
-                recent_ep = await getLastNotifiedEp(anime_id)
 
+                #Caching check
+                if anime_id not in cache_dict:
+                    recent_ep = await getLastNotifiedEp(anime_id)
+                    cache_dict[anime_id] = recent_ep
+                else:
+                    recent_ep = cache_dict[anime_id]
+                
                 if recent_ep is not None and recent_ep != last_ep:
 
                     next_ep_time = await getNextEpisode(anime_id)
@@ -37,3 +45,4 @@ async def timer(context):
 
                     subscription.last_notified_ep = recent_ep
                     subscription.save()
+        del cache_dict

@@ -98,11 +98,11 @@ async def check_finished_airing(anime_id):
             data = await response.json()
 
     try:
-        first_ep_airing_time = data.get("episodes")[0]["airingAt"]
+        last_ep_airing_time = data.get("episodes")[-1]["airingAt"]
     except (TypeError, IndexError, KeyError):
         #failed to determine due to API issues (probably anime is too old).
         return None
     
     now = datetime.now(timezone.utc).timestamp()
 
-    return first_ep_airing_time < now
+    return last_ep_airing_time < now
