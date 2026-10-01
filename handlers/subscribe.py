@@ -11,6 +11,12 @@ async def subscribe(update, context):
     
     user_id = update.effective_user.id
     anime_name = await getAnimeName(anime_id)
+
+    #probably the anime_id was not send as expected.
+    if anime_name is None:
+        await update.message.reply_text("Hmm... we couldn't find that anime.\n\nDid you provide anime_Id correctly?")
+        return
+
     last_notified_ep = await getLastNotifiedEp(anime_id)
     
     if last_notified_ep is None:
@@ -20,7 +26,7 @@ async def subscribe(update, context):
     is_finished = await check_finished_airing(anime_id)
 
     if is_finished is None:
-        await update.message.reply_text("Hmm... we couldn't find that anime. :<\nTry checking the anime ID.")
+        await update.message.reply_text("Hmm... we couldn't find that anime. :<\n\nSomething to do with airing issues.")
         return
 
     if is_finished:

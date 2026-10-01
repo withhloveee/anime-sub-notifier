@@ -9,8 +9,11 @@ async def getAnimeName(anime_id):
         async with session.get(url) as response:
             data = await response.json()
 
-    title = data["anime"]["title"]
-    return title["english"] or title["romaji"]
+    try:
+        title = data["anime"]["title"]
+        return title["english"] or title["romaji"]
+    except:
+        return None
 
 async def getLastNotifiedEp(anime_id):
     url = f"https://tsuzuki.top/api/v1/anime/{anime_id}"
