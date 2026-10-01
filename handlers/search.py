@@ -11,5 +11,6 @@ async def search(update,context):
 
     if results is None:
         await update.message.reply_text("Hmm... are you sure that's an anime? :<\n\nTry searching for an anime title.")
+        return
 
     await update.message.reply_text(results)
