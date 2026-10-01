@@ -15,26 +15,37 @@ async def start(update,context):
     )
 
     text = """
-Hii! 👋✨
+<b>Welcome 👋</b>
 
-Want to get notified whenever a new episode drops?
-It's super easy! 
+Just follow the instructions below. They're simple enough.
 
-1️⃣ /register
+━━━━━━━━━━━━━━━━━
 
-First, register yourself so I know where to send your notifications. 😊
+<b>📌 HOW TO SUBSCRIBE</b>
 
-2️⃣ /sub <animeID>
+<b>1️⃣ Search for your anime</b>
+
+Use:
+<code>/search &lt;anime_name&gt;</code>
 
 Example:
-/sub 182205
+<code>/search Frieren</code>
 
-Just replace 182205 with the animeID of the anime you want to follow.
+<b>2️⃣ Find the anime you want</b>
 
-And you're all set! 🎉
+The bot will show you the search results.
+Each result will have an Anime ID.
 
-I'll let you know whenever a new episode drops. 🔔
+<b>3️⃣ Subscribe</b>
 
-Now go enjoy your anime~ 🍿✨
+Copy the Anime ID and use:
+
+<code>/sub &lt;anime_ID&gt;</code>
+
+Example:
+<code>/sub 12345</code>
+
+<b>✅ That's it!</b> You'll now receive notifications
+when a new episode is released.
 """
-    await update.message.reply_text(text)
+    await update.message.reply_text(text,parse_mode="HTML")

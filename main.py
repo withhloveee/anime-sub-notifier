@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     app.job_queue.run_repeating(
         timer,
-        interval=60,
+        interval=1800,
         job_kwargs={
             "misfire_grace_time": 60
         }
