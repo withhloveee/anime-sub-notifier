@@ -76,22 +76,25 @@ async def search_api(anime_id):
                 async with session.get(url) as response:
                     data = await response.json()
 
-    ListOfResults = data["anime"]
+    try:
+        ListOfResults = data["anime"]
 
-    output = ""
-    for match in ListOfResults:
-        title = match["title"]
+        output = ""
+        for match in ListOfResults:
+            title = match["title"]
 
-        if title.get("english"):
-            output += title["english"]
-        else:
-            output += title["romaji"]
+            if title.get("english"):
+                output += title["english"]
+            else:
+                output += title["romaji"]
 
-        output += "\n"
-        output += "id: " + str(match["id"])
-        output += "\n\n"
+            output += "\n"
+            output += "id: " + str(match["id"])
+            output += "\n\n"
 
-    return output
+        return output
+    except:
+        return None
 
 async def check_finished_airing(anime_id):
     url = f"https://tsuzuki.top/api/v1/anime/{anime_id}"
