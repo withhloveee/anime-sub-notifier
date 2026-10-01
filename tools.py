@@ -79,6 +79,9 @@ async def search_api(anime_id):
     try:
         ListOfResults = data["anime"]
 
+        if not ListOfResults:
+            return None
+
         output = ""
         for match in ListOfResults:
             title = match["title"]
