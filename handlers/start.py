@@ -1,18 +1,19 @@
-from db.models import User
+from db.models import User, db
 
-async def start(update,context):
+async def start(update, context):
 
     user_id = update.effective_user.id
     first_name = update.effective_user.first_name
     last_name = update.effective_user.last_name
 
-    User.get_or_create(
-        user_id=user_id,
-        defaults={
-            "f_name": first_name,
-            "l_name": last_name
-        }
-    )
+    with db.connection_context():
+        User.get_or_create(
+            user_id=user_id,
+            defaults={
+                "f_name": first_name,
+                "l_name": last_name
+            }
+        )
 
     text = """
 <b>Welcome 👋</b>
@@ -48,4 +49,5 @@ Example:
 <b>✅ That's it!</b> You'll now receive notifications
 when a new episode is released.
 """
-    await update.message.reply_text(text,parse_mode="HTML")
+
+    await update.message.reply_text(text, parse_mode="HTML")
