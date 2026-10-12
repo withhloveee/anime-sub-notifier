@@ -2,6 +2,7 @@ import aiohttp
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 from db.models import Subscription
+import json
 
 async def getAnimeName(anime_id):
     url = f"https://tsuzuki.top/api/v1/anime/{anime_id}"
@@ -210,3 +211,34 @@ async def getNextEpisodeDetails(anime_id):
             "%d %B %Y at %I:%M %p"
         )
     }
+
+
+async def getAnimeDetails(anime_id):
+    url = f"https://tsuzuki.top/api/v1/anime/{anime_id}?full=1"
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            if response.status != 200:
+                return {"error": f"API returned status {response.status}"}
+
+            data = await response.json()
+
+    try:
+        anime = data["media"]
+        title = anime.get("title", {})
+
+        return {
+            "id": anime["id"],
+            "title": title.get("english") or title.get("romaji"),
+            "description": anime.get("description"),
+            "genres": anime.get("genres", []),
+            "episodes": anime.get("episodes"),
+            "status": anime.get("status"),
+            "format": anime.get("format"),
+            "average_score": anime.get("averageScore"),
+            "cover_image": anime.get("coverImage", {}).get("large"),
+            "site_url": anime.get("siteUrl")
+        }
+
+    except (KeyError, TypeError, AttributeError):
+        return {"error": "Could not parse the anime details returned by the API."}

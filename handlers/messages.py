@@ -3,7 +3,7 @@ import json
 from dotenv import load_dotenv
 from openrouter import OpenRouter
 
-from tools import search_anime,subscribe,getNextEpisodeDetails,getTodaysAiringAnime
+from tools import search_anime,subscribe,getNextEpisodeDetails,getTodaysAiringAnime,getAnimeDetails
 
 load_dotenv()
 
@@ -40,6 +40,9 @@ async def execute_tool(tool_call, user_id):
 
     elif tool_name == "getTodaysAiringAnime":
         return await getTodaysAiringAnime()
+    
+    elif tool_name == "getAnimeDetails":
+        return await getAnimeDetails((arguments["anime_id"]))
 
     return f"Unknown tool: {tool_name}"
 
@@ -59,6 +62,7 @@ async def handle_message(update, context):
 
     history.append({"role": "user", "content": user_message})
 
+    poster_url = None
     while True:
         response = client.chat.send(
                 model=MODEL,
@@ -73,6 +77,11 @@ async def handle_message(update, context):
         
         for tool_call in message.tool_calls:
             result = await execute_tool(tool_call, user_id)
+
+            if tool_call.function.name == "getAnimeDetails":
+                if isinstance(result, dict):
+                    poster_url = result.get("cover_image")
+
             history.append({
                 "role": "tool",
                 "tool_call_id": tool_call.id,
@@ -80,4 +89,20 @@ async def handle_message(update, context):
             })
 
     reply = message.content or "Sorry, something went wrong."
-    await update.message.reply_text(reply)
+    if poster_url:
+        try:
+            await update.message.reply_photo(
+                photo=poster_url,
+                caption=reply[:1024]
+            )
+
+            # Send remaining text if the caption was too long
+            if len(reply) > 1024:
+                await update.message.reply_text(reply[1024:])
+
+        except Exception as e:
+            print(f"Failed to send poster: {e}")
+            await update.message.reply_text(reply)
+
+    else:
+        await update.message.reply_text(reply)

@@ -65,5 +65,23 @@
         "additionalProperties": false
       }
     }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "getAnimeDetails",
+      "description": "Get detailed information about a specific anime, including its synopsis, genres, episode count, and airing status. Use this when the user asks what an anime is about or asks for more information about an anime.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "anime_id": {
+            "type": "integer",
+            "description": "The anime's ID"
+          }
+        },
+        "required": ["anime_id"],
+        "additionalProperties": false
+      }
+    }
   }
 ]
