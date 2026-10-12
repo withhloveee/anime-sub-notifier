@@ -3,7 +3,7 @@ import json
 from dotenv import load_dotenv
 from openrouter import OpenRouter
 
-from tools import search_anime,subscribe,getNextEpisodeDetails,getTodaysAiringAnime,getAnimeDetails
+from tools import search_anime,subscribe,getNextEpisodeDetails,getAiringAnime,getAnimeDetails
 
 load_dotenv()
 
@@ -24,22 +24,17 @@ async def execute_tool(tool_call, user_id):
     arguments = json.loads(tool_call.function.arguments)
 
     if tool_name == "search_anime":
-        print("Searching:", arguments["query"])
-
         return await search_anime(arguments["query"]) or "No anime was found."
 
     elif tool_name == "subscribe":
         anime_id = arguments["anime_id"]
-
-        print("Subscribing:", anime_id)
-
         return await subscribe(anime_id, user_id)
 
     elif tool_name == "getNextEpisodeDetails":
         return await getNextEpisodeDetails(arguments["anime_id"])
 
-    elif tool_name == "getTodaysAiringAnime":
-        return await getTodaysAiringAnime()
+    elif tool_name == "getAiringAnime":
+        return await getAiringAnime(arguments["day_offset"])
     
     elif tool_name == "getAnimeDetails":
         return await getAnimeDetails((arguments["anime_id"]))

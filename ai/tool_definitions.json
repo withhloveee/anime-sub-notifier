@@ -56,12 +56,19 @@
   {
     "type": "function",
     "function": {
-      "name": "getTodaysAiringAnime",
-      "description": "Get all subtitled anime episodes airing today, including their episode numbers and airing times. Use this when the user asks what anime are airing today, what anime episodes are releasing today, or what is airing today. Results are shown in IST (Asia/Kolkata). This tool does not require an anime ID.",
+      "name": "getAiringAnime",
+      "description": "Get subtitled anime episodes airing on a specific calendar day. Use this when the user asks what anime is airing today, tomorrow, the day after tomorrow, or on a day within the next 2 days. Interpret relative dates using India Standard Time (IST). Set day_offset to 0 for today, 1 for tomorrow, and 2 for the day after tomorrow. This tool filters results to only the requested date. Do not use this tool for dates outside this range.",
       "parameters": {
         "type": "object",
-        "properties": {},
-        "required": [],
+        "properties": {
+          "day_offset": {
+            "type": "integer",
+            "description": "Number of calendar days from today in IST: 0 = today, 1 = tomorrow, 2 = the day after tomorrow.",
+            "minimum": 0,
+            "maximum": 2
+          }
+        },
+        "required": ["day_offset"],
         "additionalProperties": false
       }
     }

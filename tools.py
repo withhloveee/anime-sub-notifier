@@ -1,8 +1,7 @@
 import aiohttp
-from datetime import datetime, timezone
+from datetime import datetime, timezone,timedelta
 from zoneinfo import ZoneInfo
 from db.models import Subscription
-import json
 
 async def getAnimeName(anime_id):
     url = f"https://tsuzuki.top/api/v1/anime/{anime_id}"
@@ -154,31 +153,50 @@ async def subscribe(anime_id, user_id):
 
 📺 Last episode released: {last_notified_ep}'''
 
-async def getTodaysAiringAnime():
-    url = "https://tsuzuki.top/api/v1/schedule?days=1&airType=sub"
+async def getAiringAnime(day_offset: int):
+
+    IST = ZoneInfo("Asia/Kolkata")
+
+    if day_offset < 0 or day_offset > 2:
+        return "I can only check today and the next 2 days."
+
+    url = "https://tsuzuki.top/api/v1/schedule?days=3&airType=sub"
 
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
+            if response.status != 200:
+                return "Failed to fetch the airing schedule."
+
             data = await response.json()
 
-    animeList = data["episodes"]
+    target_date = datetime.now(IST).date() + timedelta(days=day_offset)
 
-    responseToSend = ""
+    anime_list = data.get("episodes", [])
+    results = []
 
-    for anime in animeList:
-        airing_time = datetime.fromisoformat(anime["airingAtIso"].replace("Z", "+00:00"))
+    for anime in anime_list:
+        airing_time = datetime.fromisoformat(
+            anime["airingAtIso"].replace("Z", "+00:00")
+        ).astimezone(IST)
 
-        airing_time = airing_time.astimezone(ZoneInfo("Asia/Kolkata"))
+        # Only include anime airing on the requested IST date
+        if airing_time.date() != target_date:
+            continue
 
-        formatted_time = airing_time.strftime("%d %B, %I:%M %p")
-
-        responseToSend += (
+        results.append(
             f"{anime['title']} | "
             f"Episode: {anime['episode']} | "
-            f"At: {formatted_time}\n\n"
+            f"At: {airing_time.strftime('%d %B, %I:%M %p')}"
         )
 
-    return responseToSend
+    if not results:
+        return f"No anime found airing on {target_date.strftime('%d %B %Y')}."
+
+    return (
+        f"Anime airing on {target_date.strftime('%d %B %Y')} (IST):\n\n"
+        + "\n\n".join(results)
+    )
+
 
 async def getNextEpisodeDetails(anime_id):
     url = f"https://tsuzuki.top/api/v1/anime/{anime_id}"

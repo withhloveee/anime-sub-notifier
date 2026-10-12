@@ -9,7 +9,7 @@ from handlers.messages import handle_message
 from jobs.timer import timer
 
 load_dotenv()
-API_TOKEN = os.getenv("API_TOKEN")
+API_TOKEN = os.getenv("TELEGRAM_API_TOKEN")
 
 if __name__ == "__main__":
 
@@ -24,8 +24,6 @@ if __name__ == "__main__":
     )
 
     app.add_handler(CommandHandler("start", start))
-    print(filters.TEXT)
-    print(filters.COMMAND)
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     app.run_polling()
