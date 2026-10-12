@@ -16,38 +16,19 @@ async def start(update, context):
         )
 
     text = """
-<b>Welcome 👋</b>
+Hey there, human!👋
 
-Just follow the instructions below. They're simple enough.
+I'm your little companion.
 
-━━━━━━━━━━━━━━━━━
+You can talk to me about anime, ask me to find something to watch, or subscribe to an anime and I'll keep an eye out for new episodes for you.
 
-<b>📌 HOW TO SUBSCRIBE</b>
+Try asking me things like:
 
-<b>1️⃣ Search for your anime</b>
+• "Subscribe me to Frieren"
+• "What anime are airing today?"
+• "When is the next episode of Black Clover S2 coming out?"
 
-Use:
-<code>/search &lt;anime_name&gt;</code>
-
-Example:
-<code>/search Frieren</code>
-
-<b>2️⃣ Find the anime you want</b>
-
-The bot will show you the search results.
-Each result will have an Anime ID.
-
-<b>3️⃣ Subscribe</b>
-
-Copy the Anime ID and use:
-
-<code>/sub &lt;anime_ID&gt;</code>
-
-Example:
-<code>/sub 12345</code>
-
-<b>✅ That's it!</b> You'll now receive notifications
-when a new episode is released.
+I'll handle the rest.?
 """
 
-    await update.message.reply_text(text, parse_mode="HTML")
+    await update.message.reply_text(text)

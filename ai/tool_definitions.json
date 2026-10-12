@@ -1,0 +1,69 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "search_anime",
+      "description": "Search for anime by name. Use this when the user wants to find an anime, subscribe to an anime, or when an anime ID is needed for another tool. Never guess an anime ID.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The anime name or search query provided by the user."
+          }
+        },
+        "required": ["query"],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "subscribe",
+      "description": "Subscribe the current user to a specific anime. Use this only after exactly one anime has been identified. The anime_id must come directly from a previous search_anime result.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "anime_id": {
+            "type": "integer",
+            "description": "The exact anime ID selected from a previous search_anime result."
+          }
+        },
+        "required": ["anime_id"],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "getNextEpisodeDetails",
+      "description": "Get the next upcoming subtitled episode of a specific anime, including the episode number and its release date and time. Use this when the user asks what episode is coming next, when the next episode will air, or when the next episode is releasing. The anime_id must come directly from a previous search_anime result.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "anime_id": {
+            "type": "integer",
+            "description": "The exact anime ID from a previous search_anime result."
+          }
+        },
+        "required": ["anime_id"],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "getTodaysAiringAnime",
+      "description": "Get all subtitled anime episodes airing today, including their episode numbers and airing times. Use this when the user asks what anime are airing today, what anime episodes are releasing today, or what is airing today. Results are shown in IST (Asia/Kolkata). This tool does not require an anime ID.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  }
+]

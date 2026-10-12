@@ -1,14 +1,11 @@
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
+from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
-from telegram.ext import Application, CommandHandler
-
-#Import: Commands
+#import: handlers
 from handlers.start import start
-from handlers.subscribe import subscribe
-from handlers.search import search
+from handlers.messages import handle_message
 
-#Import: Timer
 from jobs.timer import timer
 
 load_dotenv()
@@ -27,7 +24,8 @@ if __name__ == "__main__":
     )
 
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("sub", subscribe))
-    app.add_handler(CommandHandler("search", search))
+    print(filters.TEXT)
+    print(filters.COMMAND)
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     app.run_polling()
